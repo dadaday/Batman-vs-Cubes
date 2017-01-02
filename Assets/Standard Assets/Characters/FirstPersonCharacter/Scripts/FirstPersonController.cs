@@ -27,6 +27,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
+		[SerializeField] private AudioClip m_WeaponSound;           // the sound played when character uses the weapon ADDED
+
+		public GameObject weapon;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -61,6 +64,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
         // Update is called once per frame
         private void Update()
         {
+			//ADDED
+			if (CrossPlatformInputManager.GetButtonDown ("Fire1"))
+			{
+				Debug.Log ("FIRE!!");
+				UseWeapon ();
+			}
+			//ADDEND
+
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
@@ -83,6 +94,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
         }
 
+		private void UseWeapon()
+		{
+			m_AudioSource.clip = m_WeaponSound;
+			m_AudioSource.Play();
+
+			if (weapon)
+				Debug.Log ("found it!");
+			weapon.transform.Rotate (45f, 0f, 0f);
+		}
 
         private void PlayLandingSound()
         {

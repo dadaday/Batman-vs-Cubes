@@ -5,11 +5,11 @@ public class HeroController : MonoBehaviour {
 
 	public float Speed = 2.0f;
 
-	private ParticleSystem ps;
+//	private ParticleSystem ps;
 	private bool dead = false;
 
 	void Start() {
-		ps = GetComponent<ParticleSystem> ();
+//		ps = GetComponent<ParticleSystem> ();
 	}
 
 	void Update () {

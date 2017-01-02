@@ -47,9 +47,9 @@ public class EnemyController : MonoBehaviour {
 			float distanceWithoutCollision =
 				(heroScale.magnitude + enemyScale.magnitude) * 0.4f;
 
-//			if (distance < distanceWithoutCollision) {
+			if (distance < distanceWithoutCollision) {
 //				hero.Die ();
-//			}
+			}
 		}
 
 		transform.position +=
