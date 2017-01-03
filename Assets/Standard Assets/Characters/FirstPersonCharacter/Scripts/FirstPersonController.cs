@@ -64,12 +64,23 @@ namespace UnityStandardAssets.Characters.FirstPerson
         // Update is called once per frame
         private void Update()
         {
+
 			//ADDED
 			if (CrossPlatformInputManager.GetButtonDown ("Fire1"))
 			{
 				Debug.Log ("FIRE!!");
-				UseWeapon ();
+				if (!weapon.activeSelf)
+					weapon.SetActive (true);
+				else
+					UseWeapon ();
 			}
+
+			if (Input.GetKeyDown(KeyCode.Q))
+			{
+				weapon.SetActive (!weapon.activeSelf);
+			}
+					
+
 			//ADDEND
 
             RotateView();
@@ -101,7 +112,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 			if (weapon)
 				Debug.Log ("found it!");
-			weapon.transform.Rotate (45f, 0f, 0f);
+			Animator WeapAnim = weapon.GetComponent<Animator> ();
+			WeapAnim.Play ("Swing", -1);
 		}
 
         private void PlayLandingSound()
