@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour {
 	public GameObject Player;
 
 //	private bool levelCompleted = false;
-	public float delayBetweenLevels = 10.0f;
-	private int levelNum = 0;
+	public float delayBetweenLevels = 3.0f;
+	private int levelNum = 1;
 
 	void Awake() {
 		if (instance == null) {
