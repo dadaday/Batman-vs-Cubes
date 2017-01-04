@@ -27,9 +27,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
-		[SerializeField] private AudioClip m_WeaponSound;           // the sound played when character uses the weapon ADDED
+		[SerializeField] private AudioClip batSound;           // the sound played when character uses the bat
 
 		public GameObject weapon;
+		public bool weaponEquiped = true;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -59,27 +60,27 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
         }
-
-
+			
         // Update is called once per frame
         private void Update()
         {
 
 			//ADDED
-			if (CrossPlatformInputManager.GetButtonDown ("Fire1"))
-			{
-				Debug.Log ("FIRE!!");
-				if (!weapon.activeSelf)
-					weapon.SetActive (true);
-				else
-					UseWeapon ();
+			if (CrossPlatformInputManager.GetButtonDown ("Fire1")) {
+				if (weaponEquiped) {
+					if (!weapon.activeSelf)
+						weapon.SetActive (true);
+					else
+						UseWeapon ();
+				}
 			}
 
 			if (Input.GetKeyDown(KeyCode.Q))
 			{
-				weapon.SetActive (!weapon.activeSelf);
+				if (weaponEquiped) {
+					ToggleWeapon ();
+				}
 			}
-					
 
 			//ADDEND
 
@@ -107,13 +108,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 		private void UseWeapon()
 		{
-			m_AudioSource.clip = m_WeaponSound;
-			m_AudioSource.Play();
-
-			if (weapon)
-				Debug.Log ("found it!");
+			m_AudioSource.clip = batSound;
 			Animator WeapAnim = weapon.GetComponent<Animator> ();
 			WeapAnim.Play ("Swing", -1);
+
+			m_AudioSource.Play();
+		}
+
+		public void EquipWeapon()
+		{
+			weaponEquiped = true;
+			weapon.SetActive (true);
+		}
+
+		public void ToggleWeapon()
+		{
+			weapon.SetActive (!weapon.activeSelf);
 		}
 
         private void PlayLandingSound()
