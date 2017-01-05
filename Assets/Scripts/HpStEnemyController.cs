@@ -6,6 +6,23 @@ public class HpStEnemyController : EnemyController {
 
 	public int HP = 3;
 
+	void OnTriggerEnter(Collider other)
+	{
+		Debug.Log ("Triggered HP by " + other.name);
+			
+		if (other.CompareTag ("SwingWeapon")) {
+			Animator anim = other.GetComponentInParent<Animator> ();
+
+			if (anim.GetBool ("weaponUsed"))
+				Debug.Log ("enemy was hit");
+		}
+	}
+
+//	public float AIUpdateRate = 2.0f;
+//	public float DistanceToEnemyToFollow = 10.0f;
+//
+//	public float Speed = 2.0f;
+//
 //	private EnemyState state;
 //	private Vector3 Velocity =
 //		new Vector3 ();
@@ -40,7 +57,7 @@ public class HpStEnemyController : EnemyController {
 //				(heroScale.magnitude + enemyScale.magnitude) * 0.4f;
 //
 //			if (distance < distanceWithoutCollision) {
-////				hero.Die ();
+//				//				hero.Die ();
 //			}
 //		}
 //
@@ -57,9 +74,9 @@ public class HpStEnemyController : EnemyController {
 //
 //			if (hero) {
 //				if (Vector3.Distance(
-//						transform.position,
-//						hero.transform.position
-//					) < DistanceToEnemyToFollow)
+//					transform.position,
+//					hero.transform.position
+//				) < DistanceToEnemyToFollow)
 //				{
 //					state =
 //						EnemyState.Following;

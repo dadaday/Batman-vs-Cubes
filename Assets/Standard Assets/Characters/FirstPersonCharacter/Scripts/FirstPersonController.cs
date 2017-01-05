@@ -4,6 +4,8 @@ using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
 using Random = UnityEngine.Random;
 
+using UnityEngine.UI;
+
 namespace UnityStandardAssets.Characters.FirstPerson
 {
     [RequireComponent(typeof (CharacterController))]
@@ -30,7 +32,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		[SerializeField] private AudioClip batSound;           // the sound played when character uses the bat
 
 		public GameObject weapon;
+		public Slider healthBar;
 		public bool weaponEquiped = true;
+		public int health = 100;
+		public int healthDecrement = 10;
+		private bool isDead = false;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -68,10 +74,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			//ADDED
 			if (CrossPlatformInputManager.GetButtonDown ("Fire1")) {
 				if (weaponEquiped) {
-					if (!weapon.activeSelf)
+					if (!weapon.activeSelf) {
 						weapon.SetActive (true);
-					else
+					}
+					else {
 						UseWeapon ();
+					}
 				}
 			}
 
@@ -110,8 +118,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		{
 			m_AudioSource.clip = batSound;
 			Animator WeapAnim = weapon.GetComponent<Animator> ();
-			WeapAnim.Play ("Swing", -1);
 
+			WeapAnim.SetBool ("weaponUsed", true);
 			m_AudioSource.Play();
 		}
 
@@ -126,13 +134,29 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			weapon.SetActive (!weapon.activeSelf);
 		}
 
+		void OnCollisionEnter(Collision collision)
+		{
+			Debug.Log ("collision");
+			Debug.Log ("Collided with " + collision.gameObject.name);
+
+			if (collision.gameObject.tag == "Enemy") {
+				health -= healthDecrement;
+				healthBar.value = health;
+				if (health <= 0) {
+					isDead = true;
+					Debug.Log ("You are dead");
+				}
+
+				Debug.Log (health);			
+			}
+		}
+
         private void PlayLandingSound()
         {
             m_AudioSource.clip = m_LandSound;
             m_AudioSource.Play();
             m_NextStep = m_StepCycle + .5f;
         }
-
 
         private void FixedUpdate()
         {

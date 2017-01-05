@@ -81,4 +81,16 @@ public class EnemyController : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerEnter(Collider other)
+	{
+		Debug.Log ("Triggered by " + other.name);
+
+		if (other.CompareTag ("SwingWeapon")) {
+			Animator anim = other.GetComponentInParent<Animator> ();
+
+			if (anim.GetBool ("weaponUsed"))
+				Debug.Log ("enemy hit");
+		}
+	}
+
 }
