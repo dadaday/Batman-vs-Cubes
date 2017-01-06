@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Characters.FirstPerson;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour {
 
@@ -18,9 +19,11 @@ public class GameManager : MonoBehaviour {
 	public Slider healthBar;
 	public GameObject Player;
 
-	public bool levelCompleted = false;
+	public int numberOfLevels;
+	public bool enemiesFound = false;
 	public float delayBetweenLevels = 5.0f;
 	private int levelNum = 1;
+	private bool stopUpdate = false;
 
 	void Awake() {
 		if (instance == null) {
@@ -33,37 +36,41 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update() {
-		if (!levelCompleted && GameObject.FindGameObjectsWithTag ("Enemy").Length > 0) {
-			Debug.Log ("Found an enemy");
-			levelCompleted = true;
+		if (!Player) {
+			Player = GameObject.FindGameObjectWithTag ("Player");
+			Debug.Log ("init");
 		}
 
-		if (GameObject.FindGameObjectsWithTag ("Checkpoint").Length == 0) {
-			Debug.Log ("Checkpoints cleared, going to next level");
-			EndLevel ();
-		}
-
-		if (Input.GetKeyUp (KeyCode.Escape))
-		{
-			helpMenu.SetActive (false); // escape button always disables help menu
-
-			if (!Player) {
-				Player = GameObject.FindGameObjectWithTag ("Player");
-				Debug.Log ("init");
+		if (!stopUpdate && levelNum != 0) {
+			if (!enemiesFound && GameObject.FindGameObjectsWithTag ("Enemy").Length > 0) {
+				Debug.Log ("Found an enemy");
+				enemiesFound = true;
 			}
+
+			if (GameObject.FindGameObjectsWithTag ("Checkpoint").Length == 0) {
+				Debug.Log ("Checkpoints cleared, going to next level");
+				stopUpdate = true;
+				levelNum++;
+
+				if (levelNum >= SceneManager.sceneCountInBuildSettings) {
+					
+				}
+
+				EndLevel ();
+			}
+
+			if (Input.GetKeyUp (KeyCode.Escape)) {
+				helpMenu.SetActive (false); // escape button always disables help menu
 		
-			if (IsPaused)
-			{			
-				Play ();
-			}
-			else
-			{
-				Pause ();
-				menu.SetActive(true);
-				if (quitMenu.activeSelf)
-				{
-					quitMenu.SetActive (false);
+				if (IsPaused) {			
+					Play ();
+				} else {
+					Pause ();
 					menu.SetActive (true);
+					if (quitMenu.activeSelf) {
+						quitMenu.SetActive (false);
+						menu.SetActive (true);
+					}
 				}
 			}
 		}
@@ -117,12 +124,14 @@ public class GameManager : MonoBehaviour {
 	IEnumerator waitForSec(int level)
 	{
 		yield return new WaitForSeconds (delayBetweenLevels);
+		Debug.Log ("loaded level " + level);
 		SceneManager.LoadScene (level);
-		levelCompleted = false;
+		stopUpdate = false;
+		enemiesFound = false;
 	}
 
 	public void EndLevel() {
-		LoadSceneAfterDelay (++levelNum);
+		LoadSceneAfterDelay (levelNum);
 	}
 
 	private void LoadSceneAfterDelay(int level) {
@@ -131,7 +140,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void LoadScene(int level) {
-		SceneManager.LoadScene (++levelNum);
+		SceneManager.LoadScene (level);
 	}
 
 }

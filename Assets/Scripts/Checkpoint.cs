@@ -15,7 +15,7 @@ public class Checkpoint : MonoBehaviour {
 	}
 
 	void Update() {
-		if (GameObject.FindGameObjectsWithTag ("Enemy").Length == 0 && gameMan.levelCompleted) {
+		if (GameObject.FindGameObjectsWithTag ("Enemy").Length == 0 && gameMan.enemiesFound) {
 			GetComponent<MeshRenderer> ().enabled = true;
 			GetComponent<SphereCollider> ().enabled = true;
 		}
