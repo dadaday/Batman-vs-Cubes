@@ -5,6 +5,7 @@ public class PickUpWeapon : MonoBehaviour {
 
 	public AudioClip PickUpSound;
 	private GameManager gm;
+	public GameObject enemy;
 
 	void Start()
 	{
@@ -19,7 +20,9 @@ public class PickUpWeapon : MonoBehaviour {
 			other.SendMessage ("EquipWeapon");
 			fpsAs.clip = PickUpSound;
 			fpsAs.Play ();
-			gm.EndLevel ();
+
+			enemy.SetActive (true);
+			gm.EnableMessagePanel ();
 
 			Destroy (this.gameObject);
 		}

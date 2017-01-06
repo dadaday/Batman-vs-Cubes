@@ -30,13 +30,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 		[SerializeField] private AudioClip batSound;           // the sound played when character uses the bat
-
-		public GameObject weapon;
-		public Slider healthBar;
-		public bool weaponEquiped = true;
-		public int health = 100;
-		public int healthDecrement = 10;
-		private bool isDead = false;
+		[SerializeField] private AudioClip hurtSound;           // the sound played when character is hurt
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -52,6 +46,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool m_Jumping;
         private AudioSource m_AudioSource;
 
+		public GameObject weapon;
+		private Slider healthBar;
+		private GameObject gameManager;
+
+		public bool weaponEquiped;
+		public int maxHealth = 100;
+		public int healthDecrement = 10;
+		private bool isDead = false;
+
         // Use this for initialization
         private void Start()
         {
@@ -65,13 +68,20 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+
+			gameManager = GameObject.FindGameObjectWithTag ("GameManager");
+			healthBar = gameManager.GetComponentInChildren<Slider> ();
+			healthBar.value = maxHealth;
         }
 			
         // Update is called once per frame
         private void Update()
         {
-
 			//ADDED
+			if (isDead) {
+				
+			}
+
 			if (CrossPlatformInputManager.GetButtonDown ("Fire1")) {
 				if (weaponEquiped) {
 					if (!weapon.activeSelf) {
@@ -136,19 +146,25 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 		void OnCollisionEnter(Collision collision)
 		{
-			Debug.Log ("collision");
 			Debug.Log ("Collided with " + collision.gameObject.name);
 
 			if (collision.gameObject.tag == "Enemy") {
-				health -= healthDecrement;
-				healthBar.value = health;
-				if (health <= 0) {
+				healthBar.value -= healthDecrement;
+
+				if (healthBar.value <= 0) {
 					isDead = true;
 					Debug.Log ("You are dead");
+					UnityEngine.SceneManagement.SceneManager.LoadScene (1, UnityEngine.SceneManagement.LoadSceneMode.Single);
 				}
 
-				Debug.Log (health);			
+				Debug.Log ("Player health: " + healthBar.value);			
 			}
+		}
+
+		public void PlayHurtSound()
+		{
+			m_AudioSource.clip = hurtSound;
+			m_AudioSource.Play();
 		}
 
         private void PlayLandingSound()

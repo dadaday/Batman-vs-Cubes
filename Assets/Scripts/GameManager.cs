@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Characters.FirstPerson;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -12,10 +13,12 @@ public class GameManager : MonoBehaviour {
 	public GameObject menu;
 	public GameObject quitMenu;
 	public GameObject helpMenu;
+	public GameObject messagePanel;
 
+	public Slider healthBar;
 	public GameObject Player;
 
-//	private bool levelCompleted = false;
+	public bool levelCompleted = false;
 	public float delayBetweenLevels = 5.0f;
 	private int levelNum = 1;
 
@@ -30,6 +33,15 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update() {
+		if (!levelCompleted && GameObject.FindGameObjectsWithTag ("Enemy").Length > 0) {
+			Debug.Log ("Found an enemy");
+			levelCompleted = true;
+		}
+
+		if (GameObject.FindGameObjectsWithTag ("Checkpoint").Length == 0) {
+			Debug.Log ("Checkpoints cleared, going to next level");
+			EndLevel ();
+		}
 
 		if (Input.GetKeyUp (KeyCode.Escape))
 		{
@@ -47,7 +59,7 @@ public class GameManager : MonoBehaviour {
 			else
 			{
 				Pause ();
-	
+				menu.SetActive(true);
 				if (quitMenu.activeSelf)
 				{
 					quitMenu.SetActive (false);
@@ -55,10 +67,6 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 		}
-	}
-
-	public void EndLevel() {
-		LoadSceneAfterDelay (++levelNum);
 	}
 
 	public void Exit() {
@@ -71,14 +79,13 @@ public class GameManager : MonoBehaviour {
 		Player.GetComponent<FirstPersonController> ().enabled = true;
 
 		menu.SetActive(false);
+		messagePanel.SetActive (false);
 	}
 
 	public void Pause() {
 		IsPaused = true;
 		Time.timeScale = 0.0f;
 		Player.GetComponent<FirstPersonController> ().enabled = false;
-
-		menu.SetActive(true);
 	}
 
 	public void HelpPress() {
@@ -88,22 +95,34 @@ public class GameManager : MonoBehaviour {
 	public void ExitPress() {
 		helpMenu.SetActive (false);
 		menu.SetActive (false);
+		healthBar.gameObject.SetActive (false);
 		quitMenu.SetActive (true);
 	}
 
 	public void ChooseNo() {
 		quitMenu.SetActive (false);
 		menu.SetActive (true);
+		healthBar.gameObject.SetActive (true);
 	}
 
 	public void ChooseYes() {
 		Application.Quit ();
 	}
 
+	public void EnableMessagePanel() {
+		messagePanel.SetActive (true);
+		Pause ();
+	}
+
 	IEnumerator waitForSec(int level)
 	{
 		yield return new WaitForSeconds (delayBetweenLevels);
 		SceneManager.LoadScene (level);
+		levelCompleted = false;
+	}
+
+	public void EndLevel() {
+		LoadSceneAfterDelay (++levelNum);
 	}
 
 	private void LoadSceneAfterDelay(int level) {

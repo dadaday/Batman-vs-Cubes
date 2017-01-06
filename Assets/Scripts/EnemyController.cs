@@ -9,6 +9,12 @@ public enum EnemyState {
 
 public class EnemyController : MonoBehaviour {
 
+	public int enemyMaxHealth = 100;
+	public int playerDamage = 10;
+	private int currHealth;
+
+	public GameObject explosion;
+
 	public float AIUpdateRate = 2.0f;
 	public float DistanceToEnemyToFollow = 10.0f;
 
@@ -19,6 +25,7 @@ public class EnemyController : MonoBehaviour {
 		new Vector3 ();
 
 	void Start () {
+		currHealth = enemyMaxHealth;
 		StartCoroutine (MakeDecision ());
 	}
 
@@ -88,8 +95,22 @@ public class EnemyController : MonoBehaviour {
 		if (other.CompareTag ("SwingWeapon")) {
 			Animator anim = other.GetComponentInParent<Animator> ();
 
-			if (anim.GetBool ("weaponUsed"))
+			if (anim.GetBool ("weaponUsed")) {
+				batTrigger batTrig = other.GetComponent<batTrigger> ();
 				Debug.Log ("enemy hit");
+				batTrig.PlayBatHitEffect ();
+
+				currHealth -= playerDamage;
+				Debug.Log ("Enemy health: " + currHealth);
+
+				if (currHealth <= 0) {
+					Debug.Log ("Enemy is killed by " + other.name);
+//					Instantiate (explosion, transform.position, transform.rotation);
+
+					Destroy (this.gameObject, 2.0f);
+				}
+
+			}
 		}
 	}
 
