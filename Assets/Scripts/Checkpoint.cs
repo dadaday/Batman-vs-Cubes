@@ -15,13 +15,14 @@ public class Checkpoint : MonoBehaviour {
 	}
 
 	void Update() {
+		Debug.Log ("Enemies found: " + gameMan.enemiesFound);
+
 		if (GameObject.FindGameObjectsWithTag ("Enemy").Length == 0 && gameMan.enemiesFound) {
 			GetComponent<MeshRenderer> ().enabled = true;
 			GetComponent<SphereCollider> ().enabled = true;
 		}
 
 		if (FindObjectsOfType<Checkpoint> ().Length == 1) {
-			Debug.Log ("Last checkpoint");
 			GetComponent<Renderer> ().material = finalCheckpointMat;
 		}
 	}

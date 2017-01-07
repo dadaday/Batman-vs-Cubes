@@ -17,9 +17,8 @@ public class GameManager : MonoBehaviour {
 	public GameObject messagePanel;
 
 	public Slider healthBar;
-	public GameObject Player;
+	public FirstPersonController Player;
 
-	public int numberOfLevels;
 	public bool enemiesFound = false;
 	public float delayBetweenLevels = 5.0f;
 	private int levelNum = 1;
@@ -37,9 +36,19 @@ public class GameManager : MonoBehaviour {
 
 	void Update() {
 		if (!Player) {
-			Player = GameObject.FindGameObjectWithTag ("Player");
+			Player = FindObjectOfType<FirstPersonController> ();
+			healthBar.onValueChanged.AddListener (delegate {Player.PlayHurtSound();});
 			Debug.Log ("init");
 		}
+
+		if (Player.isDead) {
+			Player.isDead = false;
+			enemiesFound = false;
+			GameObject[] enemies = GameObject.FindGameObjectsWithTag ("Enemy");
+			SceneManager.LoadScene (levelNum);
+			Debug.Log ("Enemies found in root: " + enemiesFound);
+		}
+				
 
 		if (!stopUpdate && levelNum != 0) {
 			if (!enemiesFound && GameObject.FindGameObjectsWithTag ("Enemy").Length > 0) {
@@ -53,10 +62,10 @@ public class GameManager : MonoBehaviour {
 				levelNum++;
 
 				if (levelNum >= SceneManager.sceneCountInBuildSettings) {
-					
+					Debug.Log ("YOU WON!");
+				} else {
+					EndLevel ();
 				}
-
-				EndLevel ();
 			}
 
 			if (Input.GetKeyUp (KeyCode.Escape)) {
@@ -135,7 +144,6 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void LoadSceneAfterDelay(int level) {
-		Debug.Log ("next");
 		StartCoroutine(waitForSec (level));
 	}
 

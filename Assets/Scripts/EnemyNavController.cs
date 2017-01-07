@@ -16,8 +16,7 @@ public class EnemyNavController : MonoBehaviour {
 	public float Speed = 10.0f;
 
 	private EnemyState state;
-	private Vector3 Velocity =
-		new Vector3 ();
+//	private Vector3 Velocity = new Vector3 ();
 
 	private NavMeshAgent enemyNavAgent;
 
@@ -32,7 +31,7 @@ public class EnemyNavController : MonoBehaviour {
 			FindObjectOfType <FirstPersonController> ();
 
 		if (hero) {
-			Vector3 enemyPosition = transform.position;
+//			Vector3 enemyPosition = transform.position;
 			Vector3 heroPosition = hero.transform.position;
 
 			if (state == EnemyState.Following) {	
@@ -74,7 +73,6 @@ public class EnemyNavController : MonoBehaviour {
 
 			if (anim.GetBool ("weaponUsed")) {
 				batTrigger batTrig = other.GetComponent<batTrigger> ();
-				Debug.Log ("enemy hit");
 				batTrig.PlayBatHitEffect ();
 
 				currHealth -= playerDamage;
@@ -82,12 +80,15 @@ public class EnemyNavController : MonoBehaviour {
 
 				if (currHealth <= 0) {
 					Debug.Log ("Enemy is killed by " + other.name);
-					//					Instantiate (explosion, transform.position, transform.rotation);
+					//Instantiate (explosion, transform.position, transform.rotation);
 
 					Destroy (this.gameObject, 2.0f);
 				}
 
 			}
+		}
+		if (other.CompareTag("Death")) {
+			Destroy (this.gameObject);
 		}
 	}
 

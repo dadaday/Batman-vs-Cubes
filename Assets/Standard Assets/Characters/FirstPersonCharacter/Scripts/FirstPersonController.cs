@@ -29,6 +29,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
+
 		[SerializeField] private AudioClip batSound;           // the sound played when character uses the bat
 		[SerializeField] private AudioClip hurtSound;           // the sound played when character is hurt
 
@@ -53,7 +54,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		public bool weaponEquiped;
 		public int maxHealth = 100;
 		public int healthDecrement = 10;
-		private bool isDead = false;
+		public bool isDead = false;
 
         // Use this for initialization
         private void Start()
@@ -79,7 +80,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
 			//ADDED
 			if (isDead) {
-				
+				return;
 			}
 
 			if (CrossPlatformInputManager.GetButtonDown ("Fire1")) {
@@ -148,16 +149,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		{
 			Debug.Log ("Collided with " + collision.gameObject.name);
 
-			if (collision.gameObject.tag == "Enemy") {
+			if (collision.gameObject.CompareTag("Enemy")) {
 				healthBar.value -= healthDecrement;
 
 				if (healthBar.value <= 0) {
 					isDead = true;
-					Debug.Log ("You are dead");
-					UnityEngine.SceneManagement.SceneManager.LoadScene (1, UnityEngine.SceneManagement.LoadSceneMode.Single);
 				}
 
 				Debug.Log ("Player health: " + healthBar.value);			
+			}
+		}
+
+		void OnTriggerEnter(Collider other)
+		{
+			if(other.CompareTag("Death")) {
+				isDead = true;
 			}
 		}
 

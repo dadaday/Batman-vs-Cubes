@@ -112,6 +112,9 @@ public class EnemyController : MonoBehaviour {
 
 			}
 		}
+		if (other.CompareTag("Death")) {
+			Destroy (this.gameObject);
+		}
 	}
 
 }
