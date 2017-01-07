@@ -20,8 +20,9 @@ public class GameManager : MonoBehaviour {
 	public FirstPersonController Player;
 
 	public bool enemiesFound = false;
+	public bool enableCheckpoints = false;
 	public float delayBetweenLevels = 5.0f;
-	private int levelNum = 1;
+	private int currentLevel = 1;
 	private bool stopUpdate = false;
 
 	void Awake() {
@@ -38,30 +39,26 @@ public class GameManager : MonoBehaviour {
 		if (!Player) {
 			Player = FindObjectOfType<FirstPersonController> ();
 			healthBar.onValueChanged.AddListener (delegate {Player.PlayHurtSound();});
-			Debug.Log ("init");
 		}
 
 		if (Player.isDead) {
-			Player.isDead = false;
-			enemiesFound = false;
-			GameObject[] enemies = GameObject.FindGameObjectsWithTag ("Enemy");
-			SceneManager.LoadScene (levelNum);
-			Debug.Log ("Enemies found in root: " + enemiesFound);
+			LoadScene (currentLevel);
+			return;
 		}
-				
 
-		if (!stopUpdate && levelNum != 0) {
+		if (!stopUpdate && currentLevel != 0) {
 			if (!enemiesFound && GameObject.FindGameObjectsWithTag ("Enemy").Length > 0) {
-				Debug.Log ("Found an enemy");
 				enemiesFound = true;
+			} else if (enemiesFound && GameObject.FindGameObjectsWithTag ("Enemy").Length == 0) {
+				enableCheckpoints = true;
+				enemiesFound = false;
 			}
 
 			if (GameObject.FindGameObjectsWithTag ("Checkpoint").Length == 0) {
-				Debug.Log ("Checkpoints cleared, going to next level");
 				stopUpdate = true;
-				levelNum++;
+				currentLevel++;
 
-				if (levelNum >= SceneManager.sceneCountInBuildSettings) {
+				if (currentLevel >= SceneManager.sceneCountInBuildSettings) {
 					Debug.Log ("YOU WON!");
 				} else {
 					EndLevel ();
@@ -137,10 +134,11 @@ public class GameManager : MonoBehaviour {
 		SceneManager.LoadScene (level);
 		stopUpdate = false;
 		enemiesFound = false;
+		enableCheckpoints = false;
 	}
 
 	public void EndLevel() {
-		LoadSceneAfterDelay (levelNum);
+		LoadSceneAfterDelay (currentLevel);
 	}
 
 	private void LoadSceneAfterDelay(int level) {
@@ -149,6 +147,9 @@ public class GameManager : MonoBehaviour {
 
 	public void LoadScene(int level) {
 		SceneManager.LoadScene (level);
+		enemiesFound = false;
+		enableCheckpoints = false;
+		stopUpdate = false;
 	}
 
 }

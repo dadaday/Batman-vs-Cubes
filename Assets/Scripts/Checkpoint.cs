@@ -7,20 +7,20 @@ public class Checkpoint : MonoBehaviour {
 	public Material finalCheckpointMat;
 	private GameManager gameMan;
 
+	private MeshRenderer meshRend;
+	private SphereCollider sphCol;
+
 	// Use this for initialization
 	void Start () {
-		GetComponent<MeshRenderer> ().enabled = false;
-		GetComponent<SphereCollider> ().enabled = false;
+		meshRend = GetComponent<MeshRenderer> ();
+		sphCol = GetComponent<SphereCollider> ();
 		gameMan = FindObjectOfType<GameManager> ();
 	}
 
 	void Update() {
-		Debug.Log ("Enemies found: " + gameMan.enemiesFound);
-
-		if (GameObject.FindGameObjectsWithTag ("Enemy").Length == 0 && gameMan.enemiesFound) {
-			GetComponent<MeshRenderer> ().enabled = true;
-			GetComponent<SphereCollider> ().enabled = true;
-		}
+		
+		meshRend.enabled = gameMan.enableCheckpoints;
+		sphCol.enabled = gameMan.enableCheckpoints;
 
 		if (FindObjectsOfType<Checkpoint> ().Length == 1) {
 			GetComponent<Renderer> ().material = finalCheckpointMat;

@@ -154,9 +154,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 				if (healthBar.value <= 0) {
 					isDead = true;
-				}
-
-				Debug.Log ("Player health: " + healthBar.value);			
+				}		
 			}
 		}
 
