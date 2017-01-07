@@ -59,7 +59,8 @@ public class GameManager : MonoBehaviour {
 				currentLevel++;
 
 				if (currentLevel >= SceneManager.sceneCountInBuildSettings) {
-					Debug.Log ("YOU WON!");
+					Player.GetComponent<FirstPersonController> ().enabled = false; // enable cursor
+					SceneManager.LoadScene (SceneManager.sceneCountInBuildSettings - 1); // load the last scene in build - exit
 				} else {
 					EndLevel ();
 				}
