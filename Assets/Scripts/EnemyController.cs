@@ -107,7 +107,7 @@ public class EnemyController : MonoBehaviour {
 					Debug.Log ("Enemy is killed by " + other.name);
 //					Instantiate (explosion, transform.position, transform.rotation);
 
-					Destroy (this.gameObject, 2.0f);
+					Destroy (this.gameObject, 1.0f);
 				}
 
 			}

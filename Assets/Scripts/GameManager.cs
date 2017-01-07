@@ -9,12 +9,15 @@ public class GameManager : MonoBehaviour {
 
 	public static GameManager instance;
 
+	private AudioSource audioSource;
+
 	public bool IsPaused = true;
 
 	public GameObject menu;
 	public GameObject quitMenu;
 	public GameObject helpMenu;
 	public GameObject messagePanel;
+	public AudioClip victorySound;
 
 	public Slider healthBar;
 	public FirstPersonController Player;
@@ -31,7 +34,7 @@ public class GameManager : MonoBehaviour {
 		} else if (instance != this) {
 			Destroy (gameObject);
 		}
-
+		audioSource = GetComponent<AudioSource> ();
 		DontDestroyOnLoad (gameObject);
 	}
 
@@ -55,6 +58,9 @@ public class GameManager : MonoBehaviour {
 			}
 
 			if (GameObject.FindGameObjectsWithTag ("Checkpoint").Length == 0) {
+				audioSource.clip = victorySound;
+				audioSource.Play ();
+
 				stopUpdate = true;
 				currentLevel++;
 

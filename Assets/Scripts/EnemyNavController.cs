@@ -16,7 +16,6 @@ public class EnemyNavController : MonoBehaviour {
 	public float Speed = 10.0f;
 
 	private EnemyState state;
-//	private Vector3 Velocity = new Vector3 ();
 
 	private NavMeshAgent enemyNavAgent;
 
@@ -31,19 +30,12 @@ public class EnemyNavController : MonoBehaviour {
 			FindObjectOfType <FirstPersonController> ();
 
 		if (hero) {
-//			Vector3 enemyPosition = transform.position;
 			Vector3 heroPosition = hero.transform.position;
 
 			if (state == EnemyState.Following) {	
 				enemyNavAgent.SetDestination (heroPosition);
 			}
-
-//			float distance = Vector3.Distance (heroPosition, enemyPosition);
 		}
-//
-//		transform.position += Velocity * Time.deltaTime;
-//
-//		Velocity *= 0.95f;
 	}
 
 	IEnumerator MakeDecision() {
@@ -82,7 +74,7 @@ public class EnemyNavController : MonoBehaviour {
 					Debug.Log ("Enemy is killed by " + other.name);
 					//Instantiate (explosion, transform.position, transform.rotation);
 
-					Destroy (this.gameObject, 2.0f);
+					Destroy (this.gameObject, 1.0f);
 				}
 
 			}

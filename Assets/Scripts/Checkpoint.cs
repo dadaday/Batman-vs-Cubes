@@ -29,7 +29,7 @@ public class Checkpoint : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.CompareTag ("Player")) {
-			AudioSource fpsAs = other.GetComponent<AudioSource> ();
+			AudioSource fpsAs = gameMan.GetComponent<AudioSource> ();
 			fpsAs.clip = CheckpointSound;
 			fpsAs.Play ();
 
