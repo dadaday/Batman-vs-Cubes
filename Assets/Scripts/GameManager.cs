@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour {
 		Time.timeScale = 1.0f;
 		Player.GetComponent<FirstPersonController> ().enabled = true;
 
+		helpMenu.SetActive (false);
 		menu.SetActive(false);
 		messagePanel.SetActive (false);
 	}

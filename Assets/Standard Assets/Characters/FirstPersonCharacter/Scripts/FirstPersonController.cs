@@ -149,7 +149,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		{
 			Debug.Log ("Collided with " + collision.gameObject.name);
 
-			if (collision.gameObject.CompareTag("Enemy")) {
+			if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Bullet")) {
 				healthBar.value -= healthDecrement;
 
 				if (healthBar.value <= 0) {
